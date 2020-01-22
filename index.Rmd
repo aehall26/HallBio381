@@ -7,7 +7,9 @@ output:
     highlight: haddock
     theme: cosmo
 ---
-! [heres a picture of me](IMG_5262.JPG)
+![](IMG_5262.JPG)
+
 # Homework Assignments for Computational Biology (Bio381)
+
 ## Homework 1
 [Click this link to get to homework 1](HomeworkOne.html)
