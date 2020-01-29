@@ -13,3 +13,6 @@ output:
 
 ## Homework 1
 [Click this link to get to homework 1](HomeworkOne.html)
+
+## Homework 2
+[follow this to homework 3](HomeworkThree.html)
