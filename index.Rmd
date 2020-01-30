@@ -9,10 +9,10 @@ output:
 ---
 <img src="IMG_5262.jpg" width="250" height="200"/>
 
-# Homework Assignments for Computational Biology (Bio381)
+# Homework for Computational Biology (Bio381)
 
 ## Homework 1
 [Click this link to get to homework 1](HomeworkOne.html)
 
-## Homework 3
+## Homework 3 
 [follow this to homework 3](HomeworkThree.html)
