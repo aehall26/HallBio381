@@ -5,9 +5,9 @@ date: "1/22/2020"
 output: 
   html_document: 
     highlight: haddock
-    theme: cosmo
+    theme: cerulean
 ---
-![](IMG_5262.JPG)
+<img src="IMG_5262.jpg" width="250" height="200"/>
 
 # Homework Assignments for Computational Biology (Bio381)
 

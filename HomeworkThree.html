@@ -371,58 +371,51 @@ summary {
 
 <div id="section" class="section level1">
 <h1>1.</h1>
-<p><em>find</em>:any more than 2 spaces</p>
-<pre><code>\s{2}
+<p>To complete this problem we have to erase the tabs and add commas to where there used to be spaces. First, I used <code>\s</code> to select the spaces, and <code>{2}</code> to say I was only interesting in finding locations where there were two spaces. After selecting these areas with spaces, then I replaced them with a comma. If we didn’t know that there were exactly two spaces, we could have added a comma after the 2 like this: <code>{2,}</code>.</p>
+<pre><code>
+FIND: \s{2}
+REPLACE:,
 </code></pre>
-<p><em>replace</em>: with a comma without a space</p>
-<pre><code>,</code></pre>
 </div>
 <div id="section-1" class="section level1">
 <h1>2.</h1>
-<p>step 1: FIND:find the comma</p>
-<pre><code>,</code></pre>
-<p>REPLACE: delete them</p>
-<pre><code></code></pre>
-<p>step2: FIND: identify all the components of the lines. The two first words, then all the rest that follows</p>
-<pre><code>(\w+) (\w+) (.*)
+<p>To complete this problem we can use <code>\w</code> to isolate any words. Using a + sign with w means that we isolate any strings of letters longer than 1. That brought us to the comma and the space which were not placed in parentheses because we do not care to save them for the final version. Another new tool used here is the <code>.*</code> which is an includisve term that allows us to include anything left over.</p>
+<pre><code>FIND: (\w+),\s(\w+),\s(.*)
+REPLACE: \2 \1 (\3)</code></pre>
+</div>
+<div id="section-2" class="section level1">
+<h1>3.</h1>
+<p>To add a line break after a specific portion of the text we can isolate that piece of text (.mp3) and for good housekeeping make sure you catch the space following it to avoid having that space end up at the beginning of each line as well. Use <code>\n</code>to begin a new line after each occurance of .mp3.</p>
+<pre><code>FIND: (.mp3)\s
+REPLACE: .mp3\n
 </code></pre>
-<p>REPLACE: replace by rearranging the words</p>
-<pre><code>\2 \1 (\3)
+</div>
+<div id="section-3" class="section level1">
+<h1>4.</h1>
+<p>Here we are combining several ideas. We use our ability to isolate pieces of the text we would like to save using parenthesis and specify what that text should contain using several regular expressions already reviewed. Then we use numbers proceeded by a <code>\</code> to specify the order we would like the saved segments to appear in, adding an _ where we want it.</p>
+<pre><code>FIND: (\d{2,})\s+(.*)(.mp3)
+REPLACE: \2_\1\3</code></pre>
+</div>
+<div id="section-4" class="section level1">
+<h1>5.</h1>
+<p>For this challenge we isolated the aspects of interest which in this case is only the first letter of the first word, the second word in full of variable length, and the last digits. Not in parenthesis is all the junk we don’t want to take along. We rearrange using the technique previously described.</p>
+<pre><code>FIND:(\w{1})\w+,(\w+),\d+.\d,(\d+)
+
+REPLACE:\1_\2,\3</code></pre>
+</div>
+<div id="section-5" class="section level1">
+<h1>6.</h1>
+<p>This puzzle asked us only to keep the first letter and discard the rest of the word the length of which is variable <code>(\w)\w*</code>. We also would like the keep only the first four letters of the next word, discarding the rest <code>(\w{4})\w*</code>. Finally there are numbers and a period we don’t care about <code>\d*.\d</code>. We do want to keep what comes after that which is a comma a space and one more number <code>(.*)</code>. Arrange according to order number of the pieces in parenthesis and add punctuation where needed.</p>
+<pre><code>FIND:(\w)\w*,(\w{4})\w*,\d*.\d(.*)
+REPLACE \1_\2\3</code></pre>
+</div>
+<div id="section-6" class="section level1">
+<h1>7.</h1>
+<p>For this finall challenge, we rearrange the first 3 letters of two words selected by <code>(\w{3})</code> and ignore the ends of both of those words by follow up with this expression <code>\w+</code>. We choose to keep both sets of numbers isolating them by <code>(\d+.\d)</code> and <code>(\d)</code>. The those saved parts are organized and correct punctuation and spacing is added.</p>
+<pre><code>FIND: (\w{3})\w+,(\w{3})\w+,(\d+.\d),(\d+)
+REPLACE:\1\2, \4, \3
+
 </code></pre>
-<ol start="3" style="list-style-type: decimal">
-<li></li>
-</ol>
-<p>FIND: for this problem we want to find only the characters with more than one digit</p>
-<pre><code>(\d{2,})
-</code></pre>
-<p>REPLACE: and move from there to the next string of digits to another line</p>
-<pre><code>\n\1</code></pre>
-<ol start="4" style="list-style-type: decimal">
-<li>FIND: isolate the digits, then the space, then everything else, then the .mp3</li>
-</ol>
-<pre><code>(\d{2,})\s+(.*)(.mp3)</code></pre>
-<p>REPLACE: reorder the chunks selected above and add an undrescore</p>
-<pre><code>\2_\1\3</code></pre>
-<ol start="5" style="list-style-type: decimal">
-<li>FIND: isolate the things you want which is the first letter of the first word, the second word, and the last digits</li>
-</ol>
-<pre><code>(\w{1})\w+,(\w+),\d+.\d,(\d+)
-</code></pre>
-<p>REPLACE: replace in order with a comma</p>
-<pre><code>\1_\2,\3</code></pre>
-<ol start="6" style="list-style-type: decimal">
-<li>FIND: isolate the beginning part with the underscore and then say you want the first 4 characters. Ignore the letters that come after that but do keep the rest after the words end<br />
-</li>
-</ol>
-<pre><code>(\w)\w*,(\w{4})\w*,\d*.\d(.*)</code></pre>
-<p>REPLACE: replace the parts in order with what you want to keep</p>
-<pre><code>\1_\2\3</code></pre>
-<ol start="7" style="list-style-type: decimal">
-<li>FIND:</li>
-</ol>
-<pre><code>(\w{3})\w+,(\w{3})\w+,(\d+.\d),(\d+)</code></pre>
-<p>REPLACE:</p>
-<pre><code>\1\2, \4, \3</code></pre>
 </div>
 
 
