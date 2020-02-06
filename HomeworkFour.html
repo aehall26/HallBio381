@@ -395,16 +395,17 @@ print(b)</code></pre>
 <pre class="r"><code>c &lt;- rep(5:1, 1:5)
 print(c)</code></pre>
 <pre><code>##  [1] 5 4 4 3 3 3 2 2 2 2 1 1 1 1 1</code></pre>
-<p><strong>3. Create a vector of two random uniform numbers. In a spatial map, these can be interpreted as x and y coordinates that give the location of an individual (such as a marked forest tree in a plot that has been mapped). Using one of R’s inverse trigonometry functions <code>(asin(), acos(), or atan()),</code> convert these numbers into polar coordinates (If you don’t know what polar coordinates are, read about them on the web or in your calculus textbook).</strong> <em>make two random numbers between 0 and 1</em></p>
+<p><strong>3. Create a vector of two random uniform numbers. In a spatial map, these can be interpreted as x and y coordinates that give the location of an individual (such as a marked forest tree in a plot that has been mapped). Using one of R’s inverse trigonometry functions <code>(asin(), acos(), or atan()),</code> convert these numbers into polar coordinates (If you don’t know what polar coordinates are, read about them on the web or in your calculus textbook).</strong><br />
+<em>make two random numbers between 0 and 1</em></p>
 <pre class="r"><code>coordinates &lt;- runif(2)
 print(coordinates)</code></pre>
-<pre><code>## [1] 0.1315957 0.9760828</code></pre>
+<pre><code>## [1] 0.3680091 0.8043648</code></pre>
 <p><em>make an empy vector to store the polarcoordinates:</em></p>
 <pre class="r"><code>polarcoordinates &lt;- vector(mode=&quot;numeric&quot;, length=2)</code></pre>
 <pre class="r"><code>polarcoordinates[1]&lt;-sqrt(coordinates[1]^2+coordinates[2]^2)
 polarcoordinates[2]&lt;-atan(coordinates[2]/coordinates[1])
 print(polarcoordinates)</code></pre>
-<pre><code>## [1] 0.9849138 1.4367842</code></pre>
+<pre><code>## [1] 0.8845527 1.1417104</code></pre>
 <p><strong>4. Noah’s ark</strong> <em>original queue: sheep, fox, owl, ant</em></p>
 <pre class="r"><code>original &lt;- c(&quot;sheep&quot;,&quot;fox&quot;, &quot;owl&quot;, &quot;ant&quot;)
 print(original)</code></pre>

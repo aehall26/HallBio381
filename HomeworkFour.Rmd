@@ -50,7 +50,7 @@ c <- rep(5:1, 1:5)
 print(c)
 ```
 
-**3. Create a vector of two random uniform numbers. In a spatial map, these can be interpreted as x and y coordinates that give the location of an individual (such as a marked forest tree in a plot that has been mapped). Using one of R’s inverse trigonometry functions `(asin(), acos(), or atan()),` convert these numbers into polar coordinates (If you don’t know what polar coordinates are, read about them on the web or in your calculus textbook).**
+**3. Create a vector of two random uniform numbers. In a spatial map, these can be interpreted as x and y coordinates that give the location of an individual (such as a marked forest tree in a plot that has been mapped). Using one of R’s inverse trigonometry functions `(asin(), acos(), or atan()),` convert these numbers into polar coordinates (If you don’t know what polar coordinates are, read about them on the web or in your calculus textbook).**  
 *make two random numbers between 0 and 1*
 ```{r}
 coordinates <- runif(2)
