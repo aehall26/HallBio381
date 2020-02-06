@@ -1,0 +1,127 @@
+---
+title: "Homework 4"
+author: "Alison Hall"
+date: "2/5/2020"
+output: html_document
+---
+
+**1. Suppose x=1.1, a=2.2, and b=3.3**
+```{r}
+x <- 1.1
+a <- 2.2
+b <- 3.3 
+```
+
+```{r}
+z <- (x)^((a^b))
+print(z)
+
+```
+```{r}
+z <- ((x^a)^b)
+print(z)
+```
+
+```{r}
+z <- (3*x^3)+(2*x^2)+(1)
+print(z)
+```
+
+**2. Create vectors using the rep and seq functions**
+
+*a.  create this vector* (1,2,3,4,5,6,7,8,7,6,5,4,3,2,1)
+```{r}
+a <- c(seq(1,8,by=1),seq(7,1,by=-1))
+print(a)
+
+```
+
+*b. create this vector now*
+(1,2,2,3,3,3,4,4,4,4,5,5,5,5,5)
+```{r}
+b <- rep(1:5,1:5)
+print(b)
+```
+
+*c. finally this one!*
+(5,4,4,3,3,3,2,2,2,2,1,1,1,1,1)
+```{r}
+c <- rep(5:1, 1:5)
+print(c)
+```
+
+**3. Create a vector of two random uniform numbers. In a spatial map, these can be interpreted as x and y coordinates that give the location of an individual (such as a marked forest tree in a plot that has been mapped). Using one of R’s inverse trigonometry functions `(asin(), acos(), or atan()),` convert these numbers into polar coordinates (If you don’t know what polar coordinates are, read about them on the web or in your calculus textbook).**
+*make two random numbers between 0 and 1*
+```{r}
+coordinates <- runif(2)
+print(coordinates)
+
+```
+*make an empy vector to store the polarcoordinates:*
+```{r}
+polarcoordinates <- vector(mode="numeric", length=2)
+```
+
+```{r}
+polarcoordinates[1]<-sqrt(coordinates[1]^2+coordinates[2]^2)
+polarcoordinates[2]<-atan(coordinates[2]/coordinates[1])
+print(polarcoordinates)
+```
+
+**4. Noah's ark**
+*original queue: sheep, fox, owl, ant*
+```{r}
+original <- c("sheep","fox", "owl", "ant")
+print(original)
+
+```
+*a)serpent arrives* 
+```{r}
+a <- c(original,"serpent")
+print(a)
+```
+*b) sheep exits the ark*
+```{r}
+b <- c(a[-1])
+print(b)
+```
+*c) donkey arrives to the front*
+```{r}
+c <- c("donkey",b)
+print(c)
+
+```
+
+*d)serpent leaves*
+```{r}
+d <- c(c[-5])
+print(d)
+```
+
+*e)owl leaves*
+```{r}
+e <- c(d[-3])
+print(e)
+```
+
+*f)aphid cuts the ant in like*
+```{r}
+f <- append(e, "aphid",after=2)
+print(f)
+
+```
+
+g) which position is aphid in, in the queue after f?
+```{r}
+aphidposition <- which(f=="aphid")
+print(aphidposition)
+```
+
+**5) print a sequence of numbers from 1-100 not divisible by 2,3, or 7**
+```{r}
+fullset <- seq(1,100)
+question5 <- fullset[fullset%%2 !=0 & fullset%%3 !=0 & fullset%%7 !=0]
+print(question5)
+
+```
+
