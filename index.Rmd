@@ -22,3 +22,6 @@ output:
 
 ## Assignment 5
 [follow this link to homework 5](HomeworkFive.html)
+
+## Assignment 6
+[follow this link to homework 6](HomeworkSix.html)

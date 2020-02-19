@@ -1,0 +1,147 @@
+---
+title: "Homework 6"
+author: "Alison Hall"
+date: "2/19/2020"
+output: html_document
+---
+
+Load the pertinent libraries 
+
+```{r}
+library(ggplot2) # for graphics
+library(MASS) # for maximum likelihood estimation
+```
+
+
+Input my data
+```{r}
+z <- read.table("UrchinSalinityAssay.csv",header=TRUE,sep=",", stringsAsFactors=FALSE)
+str(z)
+summary(z)
+```
+```{r}
+library(tidyr)
+long_urchins <- gather(z, Day, Flip_Time, Day1:Day14)
+print(long_urchins)
+```
+
+Generate fake data 
+
+```{r}
+#z <- rnorm(n=3000,mean=0.2)
+#z <- data.frame(1:3000,z)
+#names(z) <- list("ID","myVar")
+#z <- z[z$myVar>0,]
+#str(z)
+#summary(z$myVar)
+```
+
+
+Make histograms of density of time (seconds) it took a sea urchin to "right" itself after being flipped over 
+```{r}
+p1 <- ggplot(data=long_urchins, aes(x=Flip_Time, y=..density..)) +
+  geom_histogram(color="grey60",fill="palegreen",size=0.2) 
+print(p1)
+```
+
+
+Add an emperical curve. This dotted line fits the data to smooth out the shape of the histogram 
+```{r}
+p1 <-  p1 +  geom_density(linetype="dotted",size=0.75)
+print(p1)
+```
+
+
+Fit a normal distribution to my data. It shows us that the mean time it takes an urchin to flip is 196.18 seconds, and the standard deviation is 120.12 seconds. 
+```{r}
+normPars <- fitdistr(long_urchins$Flip_Time,"normal")
+print(normPars)
+str(normPars)
+normPars$estimate["mean"] # note structure of getting a named attribute
+```
+
+
+This added line represents the probability density for the normal distribution. This is the best fit line for the data if the data were normally distributed. 
+```{r}
+meanML <- normPars$estimate["mean"]
+sdML <- normPars$estimate["sd"]
+
+xval <- seq(0,max(long_urchins$Flip_Time),len=length(long_urchins$Flip_Time))
+
+stat <- stat_function(aes(x = Flip_Time, y = ..y..), fun = dnorm, colour="darkorchid", n = length(long_urchins$Flip_Time), args = list(mean = meanML, sd = sdML))
+ p1 + stat
+```
+
+
+Here is the fit for exponential curve: 
+```{r}
+expoPars <- fitdistr(long_urchins$Flip_Time,"exponential")
+rateML <- expoPars$estimate["rate"]
+
+stat2 <- stat_function(aes(x = xval, y = ..y..), fun = dexp, colour="blue", n = length(long_urchins$Flip_Time), args = list(rate=rateML))
+ p1 + stat + stat2
+```
+
+
+Find the maximum liklihood estimators, which are just the minimum and maximum of the flip times. 
+```{r}
+stat3 <- stat_function(aes(x = xval, y = ..y..), fun = dunif, colour="darkgreen", n = length(long_urchins$Flip_Time), args = list(min=min(long_urchins$Flip_Time), max=max(long_urchins$Flip_Time)))
+p1 + stat + stat2 + stat3 
+```
+
+Plot of the gamma probability density: 
+```{r}
+gammaPars <- fitdistr(long_urchins$Flip_Time,"gamma")
+shapeML <- gammaPars$estimate["shape"] #these are my max liliehood params 
+rateML <- gammaPars$estimate["rate"]
+
+stat4 <- stat_function(aes(x = xval, y = ..y..), fun = dgamma, colour="chocolate1", n = length(long_urchins$Flip_Time), args = list(shape=shapeML, rate=rateML))
+ p1 + stat + stat2 + stat3 + stat4
+```
+Plot beta probability density: raw data are rescaled to be between 0 and 1 and compared to the beta
+```{r}
+pSpecial <- ggplot(data=long_urchins, aes(x= Flip_Time/(max(Flip_Time + 0.1)), y=..density..)) +
+  geom_histogram(color="cornsilk",fill="cadetblue3",size=0.2) + 
+  xlim(c(0,1)) +
+  geom_density(size=0.75,linetype="dotted")
+
+betaPars <- fitdistr(x=long_urchins$Flip_Time/max(long_urchins$Flip_Time + 0.1),start=list(shape1=1,shape2=2),"beta")
+shape1ML <- betaPars$estimate["shape1"]
+shape2ML <- betaPars$estimate["shape2"]
+
+statSpecial <- stat_function(aes(x = xval, y = ..y..), fun = dbeta, colour="orchid", n = length(long_urchins$Flip_Time), args = list(shape1=shape1ML,shape2=shape2ML))
+pSpecial + statSpecial
+```
+
+Gamma distribution seems to fit best, so I made a gamma distributed data set using rgamma that is the same size as my data set. 
+```{r}
+gamma <- rgamma(n=98,shapeML,rateML)
+gamma <- data.frame(1:98,gamma)
+names(gamma) <-list("GeneratedGamma","Variable")
+str(gamma)
+summary(gamma$myVar)
+
+```
+Here is a histogram of the density of these data. 
+```{r}
+generatedp1 <- ggplot(data=gamma, aes(x=Variable, y=..density..)) +
+  geom_histogram(color="cornflowerblue",fill="palegreen",size=0.2) 
+print(generatedp1)
+```
+This adds a dotted line that is the probability density curve 
+```{r}
+generatedp1 <-  generatedp1 +  geom_density(linetype="dotted",size=0.75)
+print(generatedp1)
+```
+
+For a refresher here is the actual data. 
+```{r}
+p1 <- ggplot(data=long_urchins, aes(x=Flip_Time, y=..density..)) +
+  geom_histogram(color="grey60",fill="palegreen",size=0.2) 
+
+
+p1 <-  p1 +  geom_density(linetype="dotted",size=0.75)
+print(p1)
+```
+
+As you can see from the probability density curve, the generated data are slightly smoother and the peak is less extreme. However, I think the model is doing a pretty good job at matching my original data because it captures the general pattern of my data, with most of the values around 150 seconds (listed as flip_time in the original set and variable in the generated data set). There are also smaller peaks in both data sets around 400 seconds, which suggests that the model captures the original data well. 
