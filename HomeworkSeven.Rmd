@@ -17,9 +17,9 @@ output: html_document
 
 ```{r}
 library(ggplot2)
-Righting_Time <- rnorm(n=10,mean=5,sd=15)
+Righting_Time <- rnorm(n=10,mean=5,sd=50)
 noise <- rnorm(n=10,sd=100) #to add the noise into the relatioship so it isnt exactly linear. Changing the sd makes the data more noisy. n has to be the same in both to ensure that x and y are the same length
-Acclimation_Time <- 5 - Righting_Time*15 + noise
+Acclimation_Time <- 5 - Righting_Time*rnorm(n=10, mean=48, sd=10) + noise
 plot(Righting_Time,Acclimation_Time)
 ```
 
@@ -47,9 +47,11 @@ print(RegressionPlot)
 
 + I adjusted the sample size between 10 and 100 and still observe a negative linear relationship with Pvalues below 0.05 which is what I expect should my hypothesis be correct and suggests that I could still run my experiment even with just a few sea urchins. 
 
+
 *Adjusting the standard deviation*
 
-+ I adjusted the standard deviation in the noise that was added into the independent variable and the sd of the dependent variable. I notice when I adjusted the standard deviation of the noise the linear relationship was less tight. When the standard deviation of the noise was 200+ I began to observe an insignificant P value. 
++ I adjusted the standard deviation in the noise that was added into the independent variable and the sd of the dependent variable. I notice when I adjusted the standard deviation of the noise the linear relationship was less tight. When the standard deviation of the noise was 200+ I began to observe an insignificant P value. This means that the relationship is fairly strong in the face of noise. 
++ When I adjusted the noise of the random number that the independent variable is multiplied by as well as the sd in the noise, the p value quickly increases to become insiginificant
 
 
 
