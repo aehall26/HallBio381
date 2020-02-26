@@ -1,0 +1,58 @@
+---
+title: "Homework 7"
+author: "Alison Hall"
+date: "2/26/2020"
+output: html_document
+---
+
+
+*Hypothesis*
+
++ Long acclimitization time to lowered salinity levels will allow urchins to right themselves more quickly after experiencing a sudden low salinity event
++ If this is the case we would expect that there would be a negative correlation after running a linear regression, meaning that as acclimation time decreases, righting time increases. 
++ Independent variable- acclimatin time (continuous, real number)
++Dependent variable- righting time (continuous real number)
+
+*Generation of Fake Data assuming a normal distribution in conditions where my hypothesis was true*
+
+```{r}
+library(ggplot2)
+Righting_Time <- rnorm(n=10,mean=5,sd=15)
+noise <- rnorm(n=10,sd=100) #to add the noise into the relatioship so it isnt exactly linear. Changing the sd makes the data more noisy. n has to be the same in both to ensure that x and y are the same length
+Acclimation_Time <- 5 - Righting_Time*15 + noise
+plot(Righting_Time,Acclimation_Time)
+```
+
+*Make a tibble to organize these data*
+```{r}
+library(dplyr)
+UrchinTibble <-tibble(Righting_Time,
+                      Acclimation_Time)
+```
+
+*Regression for these data*
+```{r}
+regression <- lm(Acclimation_Time ~ Righting_Time, UrchinTibble)
+print(regression)
+summary(regression)
+```
+
+*Plot these data* 
+```{r}
+RegressionPlot <- ggplot(data=UrchinTibble, aes (x=Righting_Time,y=Acclimation_Time))+geom_point()+stat_smooth(method = lm)
+print(RegressionPlot)
+```
+
+*Adjusting the sample size*
+
++ I adjusted the sample size between 10 and 100 and still observe a negative linear relationship with Pvalues below 0.05 which is what I expect should my hypothesis be correct and suggests that I could still run my experiment even with just a few sea urchins. 
+
+*Adjusting the standard deviation*
+
++ I adjusted the standard deviation in the noise that was added into the independent variable and the sd of the dependent variable. I notice when I adjusted the standard deviation of the noise the linear relationship was less tight. When the standard deviation of the noise was 200+ I began to observe an insignificant P value. 
+
+
+
+
+
+
