@@ -1,0 +1,62 @@
+---
+title: "HomeworkEight"
+author: "Alison Hall"
+date: "3/5/2020"
+output: html_document
+---
+#### 1. Load dplyr library and take a look a tthe iris data set. It is comprised of 150 observations and 5 variables. 
+```{r}
+library(dplyr)
+data("iris")
+glimpse(iris)
+```
+
+#### 2. Create a new dataframe called iris1 comprised of *virginica* and *versicolor* with sepal legths longer than 6cm and sepal widths greater than 2.5cm. The data show that there are 56 observations and 5 variables for this new data
+```{r}
+iris1 <- filter(iris, Species == "virginica" | Species == "versicolor", Sepal.Length > 6, Sepal.Width > 2.5)
+glimpse(iris1)  # 56 observations and 5 variables. 
+```
+
+#### 3.Create a iris2 dataframe from iris1 that contains only the columns for species, Sepal.Length, and Sepal.Width. There are 56 observations with 3 variables in this new dataframe.
+```{r}
+iris2 <- select(iris1,(c(Species,Sepal.Length,Sepal.Width)))
+glimpse(iris2)
+```
+
+#### 4. Create an iris3 dataframe from iris2 tht orders the obervations of sepal length from largest to smallest then show first 6 rows. 
+```{r}
+iris3 <- arrange(iris2, desc(Sepal.Length))
+head(iris3)
+```
+
+#### 5. Create an iris4 dataframe from iris3 that creates a column with sepal area(length*width) value for each observation. How many observations and variables are there in the dataset? This new dataframe has 56 observations and 4 variables. 
+```{r}
+iris4 <- mutate(iris3, Sepal.Area = Sepal.Length*Sepal.Width )
+glimpse(iris4)
+```
+
+#### 6. Create iris5 that calculates the average sepal length, average sepal width, and the sample size of the entire iris4 dataframe and print it
+```{r}
+iris5 <- summarise(iris4, Average_Sepal_Length = mean(Sepal.Length), Average_Sepal_Width = mean(Sepal.Width), Sample_Size = n())
+
+print(iris5)
+```
+
+#### 7. Create iris6 that calculates the average sepal length, sepal width, and sample size for *each species* in the iris4 data frame and print it. 
+```{r}
+iris6 <- group_by(iris4, Species)
+iris6 <- summarize(iris6, meanLength = mean(Sepal.Length), meanWidth = mean(Sepal.Width), TotalNumber= n())
+print(iris6)
+```
+
+####8. At each stage of this assignment, the output data frame from one operation serves as the input for the next. A more efficient way to do this is using the pipe operator %>% from the tidyr package. Rwork all previous statements into an extended piping operation that uses iris as the input and generates iris6 as the output. This allows you to use the pipe to specify that you want the previous dataframe to be used as the data in the next argument. 
+```{r}
+iris %>%
+  filter(Species %in% c("versicolor","virginica"), Sepal.Length > 6, Sepal.Width > 2.5) %>%
+  arrange(desc(Sepal.Length)) %>%
+  mutate(Sepal.Area = Sepal.Length * Sepal.Width) %>%
+  group_by(Species) %>%
+  summarize(meanLength = mean(Sepal.Length), meanWidth = mean(Sepal.Width), TotalNumber= n())
+  
+```
+
