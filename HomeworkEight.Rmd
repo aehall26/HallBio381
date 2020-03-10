@@ -1,5 +1,5 @@
 ---
-title: "HomeworkEight"
+title: "Homework 8"
 author: "Alison Hall"
 date: "3/5/2020"
 output: html_document
@@ -49,7 +49,7 @@ iris6 <- summarize(iris6, meanLength = mean(Sepal.Length), meanWidth = mean(Sepa
 print(iris6)
 ```
 
-####8. At each stage of this assignment, the output data frame from one operation serves as the input for the next. A more efficient way to do this is using the pipe operator %>% from the tidyr package. Rwork all previous statements into an extended piping operation that uses iris as the input and generates iris6 as the output. This allows you to use the pipe to specify that you want the previous dataframe to be used as the data in the next argument. 
+#### 8. At each stage of this assignment, the output data frame from one operation serves as the input for the next. A more efficient way to do this is using the pipe operator %>% from the tidyr package. Rwork all previous statements into an extended piping operation that uses iris as the input and generates iris6 as the output. This allows you to use the pipe to specify that you want the previous dataframe to be used as the data in the next argument. 
 ```{r}
 iris %>%
   filter(Species %in% c("versicolor","virginica"), Sepal.Length > 6, Sepal.Width > 2.5) %>%
