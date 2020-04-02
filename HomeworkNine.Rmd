@@ -1,0 +1,132 @@
+#### 1. This would be used as the source file for functions, which I would call in part 2 to see them link together. 
+```{r}
+
+# --------------------------------
+# Homework 9
+# 01 Apr 2020
+# AEH
+# --------------------------------
+#
+
+# load library--------------------------------
+library(ggplot2)
+
+# Global Variabes --------------------------------
+popsize=100
+popsize2=10
+varmean=60
+varsd=10
+noisesd=5
+slope=10
+
+# complile functions --------------------------------
+# --------------------------------
+# FUNCTION GenData
+# description: generates a data set that will resemble my research data set
+# inputs: parameters to generate fake data with normal distribution
+# outputs: dataframe generated_data of two variables with normal distribution 
+###################################
+GenData <- function(popsize, varmean, varsd, noisesd, slope) {
+  Righting_Time <- rnorm(n=popsize,mean=varmean,sd=varsd)
+  noise <- rnorm(n=popsize, sd=noisesd)
+  Acclimation_Time <- 5 + Righting_Time*slope + noise
+  # put generated data into a dataframe:
+  generated_data <- data.frame(popsize, Righting_Time, Acclimation_Time)
+  return(generated_data)
+  
+} # end of GenData
+# check to see if function worked --------------------------------
+generated_data <- GenData(popsize, varmean, varsd, noisesd, slope)
+# --------------------------------
+# FUNCTION RegModel
+# description: conducts a basic regression analysis in R
+# inputs: dataframe of urchin righting times
+# outputs: summary of linear model (lm)
+###################################
+RegModel <- function(data=generated_data, x=generated_data$Righting_Time,y=generated_data$Acclimation_Time) {
+  reg <- lm(y~x)
+  reg_sum <- summary(reg)
+  return(reg_sum)
+}
+
+# end of RegModel
+
+#test to see if model worked:
+RegModel(generated_data())
+# --------------------------------
+
+# --------------------------------
+# FUNCTION graphresults
+# description: graoh to show relationship between variables
+# inputs: linear model from randomly generated data
+# outputs: graph!
+###################################
+graphresults <- function() {
+
+  p <- ggplot(data=generated_data, aes(x=Righting_Time, y=Acclimation_Time )) +geom_jitter()+stat_smooth(method = lm)
+
+return(p)
+
+} # end of graphresults
+#check graph results
+graphresults()
+# --------------------------------
+
+```
+
+#### Calling all the functions in order (without a source file for the purpose of hw):
+```{r}
+# Global Variabes --------------------------------
+popsize=100
+varmean=60
+varsd=10
+noisesd=5
+slope=10
+
+generated_data <- GenData(popsize, varmean, varsd, noisesd, slope)
+RegModel(generated_data)
+graphresults()
+```
+
+#### Modification to show how population size affects fit:
+```{r}
+GenData <- function(popsize, varmean, varsd, noisesd, slope) {
+  Righting_Time <- rnorm(n=popsize,mean=varmean,sd=varsd)
+  noise <- rnorm(n=popsize, sd=noisesd)
+  Acclimation_Time <- 5 + Righting_Time*slope + noise
+  # put generated data into a dataframe:
+  generated_data2 <- data.frame(popsize2, Righting_Time2, Acclimation_Time2)
+  return(generated_data2)
+  
+} # end of GenData
+GenData <- function(popsize2, varmean, varsd, noisesd, slope) {
+  Righting_Time <- rnorm(n=popsize2,mean=varmean,sd=varsd)
+  noise <- rnorm(n=popsize, sd=noisesd)
+  Acclimation_Time <- 5 + Righting_Time*slope + noise
+  # put generated data into a dataframe:
+  generated_data2 <- data.frame(popsize2, Righting_Time, Acclimation_Time)
+  return(generated_data2)
+  
+} # end of GenData
+# check to see if function worked --------------------------------
+generated_data2 <- GenData(popsize, varmean, varsd, noisesd, slope)
+#plot 
+# --------------------------------
+# FUNCTION graphresults
+# description: graoh to show relationship between variables
+# inputs: linear model from randomly generated data
+# outputs: graph!
+###################################
+graphresults <- function() {
+  
+  p <- ggplot()+
+    geom_line(data=generated_data, aes(x=Righting_Time, y=Acclimation_Time), color="blue")+
+    geom_line(data=generated_data2, aes(x=Righting_Time, y=Acclimation_Time), color="red")
+  return(p)
+  
+} # end of graphresults
+#check graph results
+graphresults()
+# --------------------------------
+```
+
