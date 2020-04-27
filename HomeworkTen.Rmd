@@ -1,0 +1,204 @@
+---
+title: "Homework10"
+author: "Alison Hall"
+date: "4/19/2020"
+output: html_document
+---
+
+1. Using a 'for loop' write a function to calculate the number of zeros in a numeric vector. Before enering the loop, set up a counter variable counter <- 0. Inside the loop, add 1 to counter each time you have a zero in the matrix. Finally, use return(counter) for the ouput. 
+
+```{r}
+library(dplyr)
+numvec <- rbinom(500,1,0.8)
+# --------------------------------
+# FUNCTION countzeros
+# description: cound the number of zeros in a numeric vector 
+# inputs: vector of numbers
+# outputs: count of zeros
+###################################
+countzeros <- function(x=numvec) {
+  counter <- 0
+  for (i in seq_along(x)) {
+    if (x[i]==0) counter <- counter + 1
+  }
+    return(counter)
+} # end of counter
+
+countzeros()
+# --------------------------------
+```
+
+2. Use subsetting instead of a loop to rewrite the function as a single line of code:
+```{r}
+
+count_zeros <- function(x=numvec) {
+  numzeros <- length(x[x==0])
+  return(numzeros)
+}
+count_zeros()
+```
+
+
+3. Write a function that takes as input two integres representing the number of rows and columns in he matrix. The output is a matric of these dimensions in which each element is the product of the row number x the column number 
+
+
+```{r}
+# FUNCTION mat
+# description: create a matrix in which each element = row x colnum
+# inputs: two integers which are the number of rows and number of columns 
+# outputs: matrix of these dimensions in which each element is the product of the row 
+###################################
+
+mat_function <- function(numrows=7, numcols=5) {
+  mat <- matrix(nrow=numrows,ncol=numcols)
+  for(i in 1:nrow(mat)) {
+  for(j in 1:ncol(mat)) {
+    
+    mat[i,j] <- i * j
+  }
+} 
+  return(mat)# end of mat
+}
+mat_function()
+# --------------------------------
+```
+
+4. Us the code from the upcoming April 2nd lecture to design an dconduct a randomization test for some of your own data. You will need to modify the functions that read in the data, calculate the netric, and randomize the data. Once those are set up, the program should run correctly calling your new functions. Also, to make your analysis fully repeatable, make sure you set the random number seed at the beginning (using set.seed())
+```{r}
+# Preliminaries  --------------------------------
+library(ggplot2)
+library(TeachingDemos)
+set.seed(100) #when you run the script multiple times you'll get the same values
+
+# make random data with noise b/c I don't have any of my own: 
+x <- rnorm(n=100,mean=10,sd=2) 
+noise <- rnorm(n=100, sd=10) 
+y <- 5.5 + x*10 + noise 
+
+# build functions  --------------------------------
+# --------------------------------
+# FUNCTION read_data
+# description: read in (or generate) data
+# inputs: file name(or nothing, as in this demo)
+# outputs: 3 column data frame of observed data (ID, x, y)
+###################################
+read_data <- function(z=NULL) {
+  if(is.null(z)) {
+    x_obs <- x
+    y_obs <- y
+    DF <- data.frame(ID=seq_along(x_obs),
+                     x_obs,
+                     y_obs) } else {
+   DF <- read.table(file=z, 
+                  header=TRUE,
+                  stringsAsFactors = FALSE) }
+
+return(DF)
+
+} # end of read_data
+# --------------------------------
+#read_data() it works! 
+
+# --------------------------------
+# FUNCTION get_metric
+# description: calculate metric for randomization test    
+# inputs: two column data frame for regression  
+# outputs: regression slope 
+###################################
+get_metric <- function(z=NULL) {
+  if(is.null(z)){
+      x_obs <- x
+      y_obs <- y
+      z <- data.frame(ID=seq_along(x_obs),
+                      x_obs, 
+                      y_obs)}
+  . <- lm(z[,3]~z[,2])
+  . <- summary(.)
+  . <- .$coefficients[2,4]
+  slope <- .
+return(slope)
+
+} # end of get_metric
+# --------------------------------
+#get_metric()
+
+# --------------------------------
+# FUNCTION shuffle_data
+# description: randomize data for a regression analysis 
+# inputs: 3 column data frame (ID, xvar, yvar)
+# outputs: 3 column data frame (ID, xvar, yvar)
+###################################
+shuffle_data <- function(z=NULL) {
+  if(is.null(z)){
+    x_obs <- x
+    y_obs <- y
+    z <- data.frame(ID=seq_along(x_obs),x_obs,y_obs)} # set up data frame                 
+  z[,3] <- sample(z[,3]) # use sample function with defaults to reshuffle column
+  
+  return(z)
+} # end of shuffle_data
+# --------------------------------
+#shuffle_data()
+
+# --------------------------------
+# FUNCTION get_pval
+# description: calculate p value from simulation 
+# inputs: list of observed metrix and vactor of simulated metrics
+# outputs: lower and upper tail probability value
+###################################
+get_pval <- function(z=NULL) {
+  z <- list(x_obs=runif(1),xSim=runif(1000))
+  p_lower <- mean(z[[2]] <= z[[1]]) #second list item in z use double brackets to pull value out of a list, single bracket gives a list item that you can't opperate on 
+  p_upper <- mean(z[[2]]>=z[[1]])
+  
+
+return(c(pL=p_lower,pU=p_upper))
+
+} # end of get_pval
+# --------------------------------
+get_pval()
+
+# --------------------------------
+## function: plot_ran_test  
+# create ggplot of histogram of simulated values
+# input: list of observed metric and vector of simulated metrics
+# output: saved ggplot graph
+#------------------------------------------------- 
+plot_ran_test <- function(z=NULL) {
+  if(is.null(z)){
+    z <- list(rnorm(1),rnorm(1000)) }
+  dF <- data.frame(ID=seq_along(z[[2]]),simX=z[[2]])
+  p1 <- ggplot(data=dF,mapping=aes(x=simX))
+  p1 + geom_histogram(mapping=aes(fill=I("goldenrod"),color=I("black"))) +
+    geom_vline(aes(xintercept=z[[1]],col="blue")) 
+  
+}
+plot_ran_test()
+
+# simulated p values --------------------------------
+
+n_sim <- 1000 # number of simulated data sets to construct
+x_sim <- rep(NA,n_sim) #set up umpty vector for simulated slope values  
+df <- read_data() # get (fake) data
+x_obs <- get_metric(df) # get slope of observed data
+
+for (i in seq_len(n_sim)) {
+  x_sim[i] <- get_metric(shuffle_data(df)) #pull out metric alue from shuffled data set and store it in the empty vector 
+}
+
+slopes <- list(x_obs,x_sim) 
+get_pval(slopes)
+plot_ran_test(slopes) # list containing observed and simulated distribution 
+# on the x axis we have the 1000 values of slopes from individual runs. The blue line is the observed slope which splits into the upper tail (which is quite small) and the simulated distribution in the lower tail 
+# each run will yield different simulation results 
+
+```
+
+5. Running a linear regression with the data: How does the pvalue compare to the one in the randomization test?
+
+From the linear model below, we see that the pvalue obtained from the statistical analysis (2.2e-16) is similar to the estimated pvalue from the randomization test (3.162321e-43).  This suggests that there is an effect from treatment and it is reflected in both analyses. 
+```{r}
+linear_regression <- lm(df[,3] ~df[,2])
+summary(linear_regression)
+```
+
