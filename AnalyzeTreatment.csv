@@ -1,0 +1,13 @@
+#summary stats forbatch processing of regression models
+# timestamp: 2020-04-29 14:47:01
+"ID","file_name","p_val"
+1,"Day1.csv",0.139433382278021
+2,"Day10.csv",0.0049108003824255
+3,"Day2.csv",0.458179921066209
+4,"Day3.csv",0.569768614367639
+5,"Day4.csv",0.228619614051686
+6,"Day5.csv",0.897987203972533
+7,"Day6.csv",0.866497272327109
+8,"Day7.csv",0.146930450347286
+9,"Day8.csv",0.807001789360996
+10,"Day9.csv",0.516796295304943

@@ -1,0 +1,81 @@
+---
+title: "Homework11"
+author: "Alison Hall"
+date: "4/28/2020"
+output: html_document
+---
+
+Repeat the exercise from the Batch Processing Lecture (7th April), but do it using real data sets rather than purely simulated. Check with folks in your lab to see if there are multiple data sets available for analysis. Stick to simple data analyses and graphics, but try to set it up as a batch process that will work on multiple files and save summary results to a common file.
+
+Conducting an ANOVA from 8 different urchins to compare whether the time it takes a sea urchin to right itself is significantly related to treatment. 
+
+```{r}
+# Write functions --------------------------------
+########################################
+
+# --------------------------------
+# FUNCTION aov_rightTime
+# description: conducts ANOF of RightingTime ~ Treatment   
+# inputs: dataframe consisting of righting time and treatment category  
+# outputs: p-value of ANOVA
+###################################
+aov_rightTime <- function(df=NULL) {
+
+  anova_urchins <- aov(RightingTime ~ Treatment, data=df)
+  . <- summary(anova_urchins)
+  . <- unlist(.)
+return(.)
+
+} # end of aov_rightTime
+# --------------------------------
+
+########################################
+# Global variables --------------------------------
+file_folder <- "UrchinDays/"
+file_out <- "AnalyzeTreatment.csv"
+
+# Create a data frame to hold anova results --------------------------------
+file_names <- list.files(path=file_folder)
+ID <- seq_along(file_names)
+file_name <- file_names
+p_val <- rep(NA, length(file_names))
+
+stats_out <- data.frame(ID,file_name,p_val)
+
+# Batch Processing --------------------------------
+
+for (i in seq_along(file_names)) {
+  data <- read.table(file=paste(file_folder,file_names[i],
+                                sep=""), # in the paste function
+                                sep=",", # in the read table which is a csv so we need a ,
+                                header=TRUE)
+  . <- aov_rightTime(data) # pull out regression stats from cleaned file 
+  stats_out[i,3] <- .[9] # gives 3 elements that will plug into last 3 columns 
+}
+
+# set up output file and incorporate time stamp and minimal metadata
+
+write.table(cat("#summary stats for",
+                  "batch processing of regression models",
+                "\n",
+                  "# timestamp: ", as.character(Sys.time()),
+                "\n",
+                file=file_out, 
+                row.names="",
+                col.names="",
+                sep=""))
+
+#now add the data frame 
+write.table(x=stats_out, 
+            file=file_out, 
+            row.names=FALSE, 
+            col.names=TRUE, 
+            sep=",",
+            append=TRUE)
+
+
+```
+
+After completeing this, I see that on the 10th day of the experiment there was a significant difference between righting times between urchins under different treatments. This makes sense to me, because for the longer the experiment went on the urchins in the treatment characterized by a gradual decrease in salinity were likly becoming more and more stressed out resulting in a difference in righting time that is most extreme the longer the experiment went on. 
+
+The CSV of these pvalues can be found [here](AssayData.csv)
