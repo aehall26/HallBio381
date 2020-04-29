@@ -78,4 +78,4 @@ write.table(x=stats_out,
 
 After completeing this, I see that on the 10th day of the experiment there was a significant difference between righting times between urchins under different treatments. This makes sense to me, because for the longer the experiment went on the urchins in the treatment characterized by a gradual decrease in salinity were likly becoming more and more stressed out resulting in a difference in righting time that is most extreme the longer the experiment went on. 
 
-The CSV of these pvalues can be found [here](AssayData.csv)
+The CSV of these pvalues can be found [here](AnalyzeTreatment.csv)
